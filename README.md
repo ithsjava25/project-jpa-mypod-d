@@ -1,49 +1,61 @@
-# 🚀 Create Your First Java Program
+# 📘 Projektarbete: JPA + Hibernate med GitHub-flöde
 
-Java has evolved to become more beginner-friendly. This guide walks you through creating a simple program that prints “Hello World,” using both the classic syntax and the new streamlined approach introduced in Java 21.
+Projektet genomförs som antingen en Java CLI-applikation eller med hjälp av JavaFX om ni vill ha ett grafiskt gränssnitt.
+Arbetet utförs i grupper om fyra deltagare. Ni bildar grupperna genom att antingen skapa en ny grupp eller
+ansluta till en befintlig grupp via GitHub Classrooms.
 
----
+Projektet ska använda en relationsdatabas, där MySQL eller PostgreSQL rekommenderas.
+Kommunikation med databasen ska ske med JPA och Hibernate, enligt code first-metoden.
 
-## ✨ Classic Java Approach
+## 🗓️ Veckoplanering med Checklista
+### ✅ Vecka 1 – Grundläggning och struktur
+- [ ] Klona GitHub-repo
+- [ ] Konfigurera persistence.xml eller använd PersistenceConfiguration i kod
+- [ ] Skapa entiteter och verifiera tabellgenerering
+- [ ] Lägg till relationer (One-to-Many, Many-to-Many)
+- [ ] Arbeta på feature-branches och använd pull requests för kodgranskning
 
-Traditionally, Java requires a class with a `main` method as the entry point:
+### ✅ Vecka 2 – Funktionalitet och relationer
+- [ ] Dela upp funktioner mellan gruppmedlemmar
+- [ ] Implementera funktionalitet för huvudentiteter
+- [ ] Testa queries med EntityManager
+- [ ] Dokumentera större designbeslut i PR-beskrivningar
+- [ ] Säkerställ att alla merges sker via kodgranskning
 
-```java
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello World");
-    }
-}
-```
+### ✅ Vecka 3 – Finslipning och presentation
+- [ ] Lägg till validering, felhantering och loggning
+- [ ] Skriv enhetstester för centrala funktioner
+- [ ] Förbered demo (~10 min):
+- [ ] Visa applikationen (CLI-kommandon eller GUI)
+- [ ] Gå igenom datamodellen och relationerna
 
-This works across all Java versions and forms the foundation of most Java programs.
+## 🎯 Projektförslag
+### Spelturnering / E-sportplattform 🎮
 
----
+One-to-Many: En turnering → flera matcher
 
-## 🆕 Java 25: Unnamed Class with Instance Main Method
+Many-to-Many: Spelare ↔ Lag
 
-In newer versions like **Java 25**, you can use **Unnamed Classes** and an **Instance Main Method**, which allows for a much cleaner syntax:
+### Film- och serietjänst (à la Netflix) 🎬
 
-```java
-void main() {
-    System.out.println("Hello World");
-}
-```
+One-to-Many: En regissör → flera filmer/serier
 
-### 💡 Why is this cool?
+Many-to-Many: Användare ↔ Favoritlistor
 
-- ✅ No need for a `public class` declaration  
-- ✅ No `static` keyword required  
-- ✅ Great for quick scripts and learning  
+### Musikspelare 🎵
 
-To compile and run this, use:
+One-to-Many: En artist → flera album
 
-```bash
-java --source 25 HelloWorld.java
-```
+Many-to-Many: Album ↔ Spellistor
 
----
+### Projekt- och uppgiftshantering 📋
 
-## 📚 Learn More
+One-to-Many: Ett projekt → flera uppgifter
 
-This feature is part of Java’s ongoing effort to streamline syntax. You can explore deeper in [Baeldung’s guide to Unnamed Classes and Instance Main Methods](https://www.baeldung.com/java-21-unnamed-class-instance-main).
+Many-to-Many: Uppgifter ↔ Användare
+
+### Restaurangbokning 🍽️
+
+One-to-Many: En restaurang → flera bord
+
+Many-to-Many: Gäster ↔ Bokningar

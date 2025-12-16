@@ -17,7 +17,7 @@ public class PersistenceManager {
 
     static {
 
-        List<Class<?>> entities = getEntities("org.example");
+        List<Class<?>> entities = getEntities("org.example.entity");
 
         final PersistenceConfiguration cfg = new HibernatePersistenceConfiguration("emf")
             .jdbcUrl("jdbc:mysql://localhost:3306/mypod")

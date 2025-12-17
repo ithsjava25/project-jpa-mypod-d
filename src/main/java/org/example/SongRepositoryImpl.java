@@ -10,8 +10,7 @@ import java.util.List;
 
 public class SongRepositoryImpl implements SongRepository {
 
-   private final EntityManagerFactory emf = PersistenceManager.getEntityManagerFactory();
-
+    private final EntityManagerFactory emf = PersistenceManager.getEntityManagerFactory();
 
     @Override
     public List<Song> findSongByArtist() {
@@ -20,50 +19,51 @@ public class SongRepositoryImpl implements SongRepository {
 
     @Override
     public Long count() {
-        return emf.createEntityManager()
-            .createQuery("select count(s) from Song s", Long.class)
-            .getSingleResult();
+        try (var em = emf.createEntityManager()) {
+            return em.createQuery("select count(s) from Song s", Long.class)
+                .getSingleResult();
+        }
     }
 
     @Override
     public boolean existsByUniqueId(Song song) {
-        return emf.createEntityManager()
-            .createQuery("select count(s) from Song s where s.songId = songId", Long.class)
-            .getSingleResult() > 0;
+        try (var em = emf.createEntityManager()) {
+            return em.createQuery("select count(s) from Song s where s.songId = :songId", Long.class)
+                .setParameter("songId", song.getSongId())
+                .getSingleResult() > 0;
+        }
     }
 
     @Override
     public boolean existsByUniqueId(Album album) {
-        return emf.createEntityManager()
-            .createQuery("select count(a) from Album a where a.albumId = albumId", Long.class)
-            .getSingleResult() > 0;
+        try (var em = emf.createEntityManager()) {
+            return em.createQuery("select count(a) from Album a where a.albumId = :albumId", Long.class)
+                .setParameter("albumId", album.getAlbumId())
+                .getSingleResult() > 0;
+        }
     }
 
     @Override
     public boolean existsByUniqueId(Artist artist) {
-        return emf.createEntityManager()
-            .createQuery("select count(a) from Artist a where a.artistId = artistId", Long.class)
-            .getSingleResult() > 0;
+        try (var em = emf.createEntityManager()) {
+            return em.createQuery("select count(a) from Artist a where a.artistId = :artistId", Long.class)
+                .setParameter("artistId", artist.getArtistId())
+                .getSingleResult() > 0;
+        }
     }
-
 
     @Override
     public void save(Song song) {
-        if(!existsByUniqueId(song))
-            emf.runInTransaction(em -> em.persist(song));
-
+        emf.runInTransaction(em -> em.persist(song));
     }
 
     @Override
     public void save(Album album) {
-        if(!existsByUniqueId(album))
-            emf.runInTransaction(em -> em.persist(album));
+        emf.runInTransaction(em -> em.persist(album));
     }
 
     @Override
     public void save(Artist artist) {
-        if(!existsByUniqueId(artist))
-            emf.runInTransaction(em -> em.persist(artist));
+        emf.runInTransaction(em -> em.persist(artist));
     }
 }
-

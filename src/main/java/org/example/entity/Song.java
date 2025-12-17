@@ -13,7 +13,7 @@ import java.util.Set;
 public class Song {
 
     @Id
-    @Column(name="song_id")
+    @Column(name = "song_id")
     private Long songId;
 
     private String title;
@@ -27,17 +27,21 @@ public class Song {
     @ManyToMany(mappedBy = "songs")
     private Set<Playlist> playlist = new HashSet<>();
 
-    protected Song() {}
+    protected Song() {
+    }
 
-    public Song(Long songId, String title, Long length) {
+    public Song(Long songId, String title, Long length, Album album) {
         this.songId = songId;
         this.title = title;
         this.length = length;
-
+        this.album = album;
     }
 
-    public static Song fromDTO(ItunesDTO dto) {
-        return new Song(dto.trackId(), dto.trackName(), dto.trackTimeMillis());
+    public static Song fromDTO(ItunesDTO dto, Album album) {
+        if (dto.trackId() == null || dto.trackName() == null) {
+            throw new IllegalArgumentException("Required fields (trackId, trackName) cannot be null");
+        }
+        return new Song(dto.trackId(), dto.trackName(), dto.trackTimeMillis(), album);
     }
 
     public Set<Playlist> getPlaylist() {
@@ -96,9 +100,6 @@ public class Song {
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
-
-
-    //Todo: Generate toString?
 
     @Override
     public String toString() {

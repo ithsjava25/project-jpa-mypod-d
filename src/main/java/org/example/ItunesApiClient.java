@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +27,13 @@ public class ItunesApiClient {
 
     public List<ItunesDTO> searchSongs(String term) throws Exception {
 
-
         String encodedTerm = URLEncoder.encode(term, StandardCharsets.UTF_8);
-        String url = "https://itunes.apple.com/search?term=" + encodedTerm + "&entity=song&attribute=artistTerm&limit=3";
+        String url = "https://itunes.apple.com/search?term=" + encodedTerm + "&entity=song&attribute=artistTerm&limit=8";
 
         HttpRequest request = HttpRequest.newBuilder()
             .GET()
             .uri(URI.create(url))
+            .timeout(Duration.ofSeconds(10))
             .build();
 
         HttpResponse<String> response =
@@ -43,9 +44,12 @@ public class ItunesApiClient {
             throw new RuntimeException("API-fel: " + response.statusCode());
         }
 
-        // Parsar JSON
+        // Parse JSON
         JsonNode root = mapper.readTree(response.body());
         JsonNode results = root.get("results");
+        if (results == null || !results.isArray()) {
+            return List.of();
+        }
 
         List<ItunesDTO> songs = new ArrayList<>();
         for (JsonNode node : results) {

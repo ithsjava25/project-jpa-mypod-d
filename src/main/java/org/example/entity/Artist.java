@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.example.ItunesDTO;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,25 +12,29 @@ import java.util.Objects;
 public class Artist {
 
     @Id
-    @Column(name="artist_id")
+    @Column(name = "artist_id")
     private Long artistId;
 
     private String name;
 
     private String country;
+        
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Album> album = new ArrayList<>();
 
-    @OneToMany(mappedBy = "artist")
-    private List<Album> album;
+    protected Artist() {
+    }
 
-    protected Artist (){}
-
-    public Artist (Long artistId, String name, String country) {
+    public Artist(Long artistId, String name, String country) {
         this.artistId = artistId;
         this.name = name;
         this.country = country;
     }
 
     public static Artist fromDTO(ItunesDTO dto) {
+        if (dto.artistId() == null || dto.artistName() == null) {
+            throw new IllegalArgumentException("Required fields (artistId, artistName) cannot be null");
+        }
         return new Artist(dto.artistId(), dto.artistName(), dto.country());
     }
 

@@ -5,6 +5,7 @@ import org.example.ItunesDTO;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,28 +24,37 @@ public class Album {
 
     private Long trackCount;
 
-    @OneToMany(mappedBy = "album")
-    private List<Song> song;
+//    @OneToMany(mappedBy = "album")
+    //private List<Song> song;
+
+   // @ManyToOne(cascade = CascadeType.PERSIST)
+   // @JoinColumn(name="artist_id")
+ //   private Artist artist;
 
     @ManyToOne
-    @JoinColumn(name="artist_id")
+    @JoinColumn(name = "artist_id")
     private Artist artist;
+
+    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Song> song = new ArrayList<>();
 
     protected Album (){}
 
-    public Album(Long albumId, String name, String genre, int year, Long trackCount) {
+    public Album(Long albumId, String name, String genre, int year, Long trackCount, Artist artist) {
         this.albumId = albumId;
         this.name = name;
         this.genre = genre;
         this.year = year;
         this.trackCount = trackCount;
+        this.artist = artist;
     }
 
-    public static Album fromDTO(ItunesDTO dto) {
-        return new Album(dto.collectionId(), dto.collectionName(), dto.primaryGenreName(), dto.releaseYear(), dto.trackCount());
+    public static Album fromDTO(ItunesDTO dto, Artist artist) {
+        if (dto.collectionId() == null || dto.collectionName() == null){
+            throw new IllegalArgumentException("Required fields (albumId, albumName) cannot be null");
+        }
+        return new Album(dto.collectionId(), dto.collectionName(), dto.primaryGenreName(), dto.releaseYear(), dto.trackCount(),artist);
     }
-
-
 
     public Long getAlbumId() {
         return albumId;

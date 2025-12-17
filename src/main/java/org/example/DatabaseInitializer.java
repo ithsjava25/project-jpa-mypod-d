@@ -24,37 +24,38 @@ public class DatabaseInitializer {
         }
 
         List<String> searches = List.of("the+war+on+drugs",
-                                        "refused",
-                                        "thrice",
-                                        "16+horsepower",
-                                        "viagra+boys",
-                                        "geese",
-                                        "ghost",
-                                        "run+the+jewels",
-                                        "rammstein",
-                                        "salvatore+ganacci",
-                                        "baroness"
+            "refused",
+            "thrice",
+            "16+horsepower",
+            "viagra+boys",
+            "geese",
+            "ghost",
+            "run+the+jewels",
+            "rammstein",
+            "salvatore+ganacci",
+            "baroness"
         );
         for (String term : searches) {
             try {
                 apiClient.searchSongs(term).forEach(dto -> {
-                    Song s = Song.fromDTO(dto);
-                    Album al = Album.fromDTO(dto);
                     Artist ar = Artist.fromDTO(dto);
-//                    s.setTitle(dto.trackName());
-//                    s.setSongId((long) dto.trackId());
-//                    s.setLength((long) dto.trackTimeMillis());
-                    songRepo.save(s);
-                    songRepo.save(al);
-                    songRepo.save(ar);
+                    if (!songRepo.existsByUniqueId(ar)) {
+                        songRepo.save(ar);
+                    }
 
+                    Album al = Album.fromDTO(dto, ar);
+                    if (!songRepo.existsByUniqueId(al)) {
+                        songRepo.save(al);
+                    }
+
+                    Song s = Song.fromDTO(dto, al);
+                    if (!songRepo.existsByUniqueId(s)) {
+                        songRepo.save(s);
+                    }
                 });
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Failed to fetch or persist data for search term: " + term, e);
             }
         }
     }
-
-
 }
-

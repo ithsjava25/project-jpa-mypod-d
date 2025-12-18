@@ -1,6 +1,7 @@
 package org.example;
 
 import jakarta.persistence.EntityManagerFactory;
+import javafx.application.Application;
 import org.example.repo.*;
 
 public class App {
@@ -23,6 +24,6 @@ public class App {
             throw new RuntimeException("Failed to initialize database", e);
         }
 
-
+        Application.launch(MyPod.class, args);
     }
 }

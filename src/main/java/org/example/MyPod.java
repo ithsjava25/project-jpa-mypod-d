@@ -213,9 +213,18 @@ public class MyPod extends Application{
         screenContent.getChildren().add(screenTitle);
 
         switch (screenName) {
-            case "Songs" -> songs.forEach(s -> addMenuItem(s.getTitle()));
-            case "Artists" -> artists.forEach(a -> addMenuItem(a.getName()));
-            case "Albums" -> albums.forEach(al -> addMenuItem(al.getName()));
+            case "Songs" -> {
+                if (songs != null) songs.forEach(s -> addMenuItem(s.getTitle()));
+                else addMenuItem("No songs available");
+            }
+            case "Artists" -> {
+                if (artists != null) artists.forEach(a -> addMenuItem(a.getName()));
+                else addMenuItem("No artists available");
+            }
+            case "Albums" -> {
+               if (albums != null) albums.forEach(al -> addMenuItem(al.getName()));
+               else addMenuItem("No albums available");
+            }
             case "Playlists" -> addMenuItem("Inga spellistor skapade");
         }
     }

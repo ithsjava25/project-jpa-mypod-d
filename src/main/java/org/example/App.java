@@ -22,5 +22,7 @@ public class App {
             System.err.println("Database initialization failed: " + e.getMessage());
             throw new RuntimeException("Failed to initialize database", e);
         }
+
+
     }
 }

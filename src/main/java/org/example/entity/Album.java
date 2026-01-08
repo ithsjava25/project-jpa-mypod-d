@@ -210,7 +210,7 @@ public class Album {
             return ImageIO.read(is);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return null;
         }
     }
 

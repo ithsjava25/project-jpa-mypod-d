@@ -57,6 +57,8 @@ public class ItunesApiClient {
         for (JsonNode node : results) {
             ItunesDTO song = mapper.treeToValue(node, ItunesDTO.class);
 
+            if (song.artistName() == null) { continue; }
+
             String normalizedArtist = normalize(song.artistName());
 
             if(normalizedTerm.equals(normalizedArtist)) {
@@ -67,6 +69,9 @@ public class ItunesApiClient {
         return songs;
     }
     public String normalize (String s){
+        if (s == null) {
+            return "";
+        }
         return s.toLowerCase()
             .replaceAll("[+\\s]+", " ")
             .trim();

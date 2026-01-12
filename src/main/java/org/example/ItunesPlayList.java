@@ -482,13 +482,18 @@ public class ItunesPlayList {
             itm.setOnAction(e -> {
                 // Om låten inte redan finns i listan, lägg till den
                 if (!pri.isSongInPlaylist(pl, sel)) {
-                    pri.addSong(pl, sel);
-                    pl.getSongs().add(sel);
+                    try {
+                        pri.addSong(pl, sel);
+                        pl.getSongs().add(sel);
+                    } catch (IllegalStateException ex) {
+                        new Alert(Alert.AlertType.ERROR, "Could not add song: " + ex.getMessage()).showAndWait();
+                    }
                 }
             });
             menu.getItems().add(itm);
         }
         // Visa menyn vid knappen
-        menu.show(anchor, anchor.getScene().getWindow().getX() + anchor.getLayoutX(), anchor.getScene().getWindow().getY() + anchor.getLayoutY());
+        var bounds = anchor.localToScreen(anchor.getBoundsInLocal());
+        menu.show(anchor, bounds.getMinX(), bounds.getMaxY());
     }
 }

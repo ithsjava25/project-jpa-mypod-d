@@ -33,6 +33,8 @@ import java.util.List;
  */
 public class MyPod extends Application {
 
+    private String currentScreenName = "";
+
     // --- DATA-LAGER ---
     // Repositories används för att hämta data från databasen istället för att hårdkoda den.
     private final SongRepository songRepo = new SongRepositoryImpl(PersistenceManager.getEntityManagerFactory());
@@ -202,12 +204,21 @@ public class MyPod extends Application {
      */
     private void setupNavigation(Scene scene) {
         scene.setOnKeyPressed(event -> {
-            // ESCAPE fungerar som "Back"-knapp
+                /// Ny kod //
             if (event.getCode() == KeyCode.ESCAPE) {
-                showMainMenu();
+                if ("PlaylistSongs".equals(currentScreenName)) {
+                    showScreen("Playlists");
+                }
+                // ESCAPE fungerar som "Back"-knapp
+                else {
+                    showMainMenu();
+
+                }
                 return;
+
             }
 
+            ///  NY KOD SLUT ///
             int totalItems = menuLabels.size();
             if (totalItems == 0) return; // Gör inget om listan är tom
 
@@ -285,7 +296,9 @@ public class MyPod extends Application {
         menuLabels.clear();                  // Rensa listan med menyval
         isMainMenu = false;                  // Vi är inte i huvudmenyn längre
         selectedIndex = 0;                   // Återställ markör till toppen
-
+        /// NY KOD ///
+        currentScreenName = screenName;
+        ///  NY KOD SLUT ///
         // Rubrik
         Label screenTitle = new Label(screenName);
         screenTitle.getStyleClass().add("screen-title");
@@ -308,9 +321,14 @@ public class MyPod extends Application {
                     albums.forEach(al -> addMenuItem(al.getName()));
                 } else addMenuItem("No albums found");
             }
+            /// NY KOD ///
             case "Playlists" -> {
-                openMusicPlayer(); // Öppnar myTunes i nytt fönster
-                return;
+                addMenuItem("Edit Playlists");
+//                openMusicPlayer(); // Öppnar myTunes i nytt fönster
+                if(playlists != null && !playlists.isEmpty()) {
+                    playlists.forEach(pl -> addMenuItem(pl.getName()));
+                } else addMenuItem("No playlists found");
+            ///  SLUT NY KOD ///
             }
         }
         updateMenu(); // Uppdatera så första valet är markerat
@@ -323,6 +341,11 @@ public class MyPod extends Application {
         Label label = new Label(text);
         label.getStyleClass().add("menu-item");
         label.setMaxWidth(Double.MAX_VALUE); // Gör att raden fyller hela bredden (snyggare markering)
+
+        if("Edit Playlists".equals(text)) {
+            label.setStyle("-fx-font-weight: bold; -fx-underline: true;");
+        }
+
         menuLabels.add(label);
         screenContent.getChildren().add(label);
     }
@@ -352,7 +375,50 @@ public class MyPod extends Application {
     private void handleSelection(String selection) {
         // Här kan du lägga till logik för att spela låten eller öppna albumet
         System.out.println("User selected: " + selection);
+
+        if("Playlists".equals(currentScreenName)){
+
+            if("Edit Playlists".equals(selection)){
+                openMusicPlayer();
+                return;
+            }
+
+            Playlist selectedPlaylist = playlists.stream()
+                    .filter(p -> p.getName()
+                    .equals(selection))
+                    .findFirst().orElse(null);
+
+            if(selectedPlaylist != null){
+                openPlaylist(selectedPlaylist);
+            }
+        }
     }
+        /// NY KOD ///
+    private void openPlaylist(Playlist p){
+        screenContent.getChildren().clear();
+        menuLabels.clear();
+        selectedIndex = 0;
+
+        currentScreenName = "PlaylistSongs";
+
+        Label title = new Label(p.getName());
+        title.getStyleClass().add("screen-title");
+        screenContent.getChildren().add(title);
+
+
+
+        if(p.getSongs() != null && !p.getSongs().isEmpty()) {
+            List<Song> playlistSongs = new ArrayList<>(p.getSongs());
+            for(Song s : playlistSongs){
+                addMenuItem(s.getTitle());
+            }
+        }else {
+            addMenuItem("No songs found");
+        }
+        updateMenu();
+
+    }
+    /// NY KOD SLUT ///
 
     /**
      * Öppnar det externa fönstret "ItunesPlayList".

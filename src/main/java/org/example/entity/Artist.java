@@ -18,11 +18,16 @@ public class Artist {
     private String name;
 
     private String country;
-        
+
     @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Album> album = new ArrayList<>();
 
     protected Artist() {
+    }
+
+    public Artist(String name, String country) {
+        this.name = name;
+        this.country = country;
     }
 
     public Artist(Long artistId, String name, String country) {

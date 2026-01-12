@@ -20,6 +20,7 @@ public class Album {
 
     private String genre;
 
+    @Column(name = "release_year")
     private int year;
 
     private Long trackCount;
@@ -32,6 +33,15 @@ public class Album {
     private List<Song> song = new ArrayList<>();
 
     protected Album() {
+    }
+
+    public Album(String name, String genre, int year, Long trackCount, Artist artist) {
+        this.name = name;
+        this.genre = genre;
+        this.year = year;
+        this.trackCount = trackCount;
+        this.artist = artist;
+
     }
 
     public Album(Long albumId, String name, String genre, int year, Long trackCount, Artist artist) {

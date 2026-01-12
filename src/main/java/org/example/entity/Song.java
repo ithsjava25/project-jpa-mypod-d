@@ -30,6 +30,12 @@ public class Song {
     protected Song() {
     }
 
+    public Song(String title, Long length, Album album) {
+        this.title = title;
+        this.length = length;
+        this.album = album;
+    }
+
     public Song(Long songId, String title, Long length, Album album) {
         this.songId = songId;
         this.title = title;

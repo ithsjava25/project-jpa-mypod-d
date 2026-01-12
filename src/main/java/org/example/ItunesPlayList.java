@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 import org.example.entity.Playlist;
 import org.example.entity.Song;
 import org.example.repo.PlaylistRepository;
-import org.example.repo.PlaylistRepositoryImpl;
 
 import java.util.List;
 
@@ -23,8 +22,6 @@ import java.util.List;
  * Huvudklass för GUI:t. Hanterar visning av bibliotek, spellistor och sökning.
  */
 public class ItunesPlayList {
-
-    // PlaylistRepository pri = new PlaylistRepositoryImpl();
 
     private final PlaylistRepository pri;
 
@@ -99,7 +96,6 @@ public class ItunesPlayList {
         sourceList.setPrefWidth(200);
 
         /// Ändrad Kod ///
-
         sourceList.setCellFactory(sl -> {
             ListCell<Playlist> cell = new ListCell<>() {
                 @Override
@@ -113,7 +109,6 @@ public class ItunesPlayList {
                     }
                 }
             };
-
 
             ContextMenu contextMenu = new ContextMenu();
 
@@ -136,19 +131,19 @@ public class ItunesPlayList {
                 }
             });
 
-            contextMenu.getItems().addAll(renameItem, deleteItem, new SeparatorMenuItem());
+            contextMenu.getItems().addAll(renameItem, deleteItem);
 
             cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
                 if (isNowEmpty) {
                     cell.setContextMenu(null);
-                }else {
+                } else {
                     cell.setContextMenu(contextMenu);
                 }
             });
             return cell;
         });
 
-        /// ///////////////////////////////////////////////
+        //////////////////////////////////////////////////
 
         // Lyssnare: Vad händer när man klickar på en spellista i menyn?
         sourceList.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
@@ -166,7 +161,6 @@ public class ItunesPlayList {
         // 3. MITTEN (Låttabellen)
         // ---------------------------------------------------------
         setupTable(); // Konfigurerar kolumner och beteende för tabellen
-
 
         // ---------------------------------------------------------
         // 4. BOTTEN (Knappar för att hantera listor)
@@ -309,14 +303,10 @@ public class ItunesPlayList {
                 }
             });
 
-
             Menu addSongSubMenu = new Menu("Lägg till i spellistan");
             MenuItem removeSongItem = new MenuItem("Ta bort från Spellistan");
 
             removeSongItem.setOnAction(e -> {
-                if (!row.isEmpty()) {
-                    songTableView.getSelectionModel().select(row.getIndex());
-                }
                 removeSelectedSong();
             });
 
@@ -325,23 +315,25 @@ public class ItunesPlayList {
                 addSongSubMenu.getItems().clear();
                 Song selectedSong = row.getItem();
 
-
                 if (selectedSong != null && !allPlaylistList.isEmpty()) {
                     for (Playlist pl : allPlaylistList) {
                         // Hoppa över biblioteket/huvudlistan om id är 1
-                        if (pl.getPlaylistId() == 1L) continue;
+                        if (pl.getPlaylistId() != null && pl.getPlaylistId().equals(1L)) continue;
 
                         MenuItem playListItem = new MenuItem(pl.getName());
                         playListItem.setOnAction(e -> {
-                            if (!pri.isSongInPlaylist(pl, selectedSong)) {
-                                pri.addSong(pl, selectedSong);
-                                pl.getSongs().add(selectedSong);
+                            try {
+                                if (!pri.isSongInPlaylist(pl, selectedSong)) {
+                                    pri.addSong(pl, selectedSong);
+                                    pl.getSongs().add(selectedSong);
+                                }
+                            } catch (IllegalStateException ex) {
+                                new Alert(Alert.AlertType.ERROR, "Kunde inte lägga till låten: " + ex.getMessage()).showAndWait();
                             }
                         });
                         addSongSubMenu.getItems().add(playListItem);
                     }
                 }
-
 
                 if (addSongSubMenu.getItems().isEmpty()) {
                     MenuItem emptyItem = new MenuItem("Inga spellistor tillgängliga");
@@ -350,11 +342,10 @@ public class ItunesPlayList {
                 }
 
                 Playlist currentList = sourceList.getSelectionModel().getSelectedItem();
-                removeSongItem.setVisible(currentList != null && currentList.getPlaylistId() != 1L);
+                removeSongItem.setVisible(currentList != null && !currentList.getPlaylistId().equals(1L));
             });
 
             contextMenu.getItems().addAll(addSongSubMenu, new SeparatorMenuItem(), removeSongItem);
-
 
             row.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
                 if (isNowEmpty) {
@@ -368,7 +359,6 @@ public class ItunesPlayList {
         });
     }
     /// ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     /**
      * Filtrerar låtarna i den aktiva listan baserat på söktexten.
@@ -429,7 +419,7 @@ public class ItunesPlayList {
     private void renameSelectedPlaylist() {
         Playlist sel = sourceList.getSelectionModel().getSelectedItem();
 
-        if (sel == null || sel.getPlaylistId() == 1L || sel.getPlaylistId() == 2L) {
+        if (sel == null || sel.getPlaylistId().equals(1L) || sel.getPlaylistId().equals(2L)) {
             return;
         }
 
@@ -452,7 +442,7 @@ public class ItunesPlayList {
      */
     private void deleteSelectedPlaylist() {
         Playlist sel = sourceList.getSelectionModel().getSelectedItem();
-        if (sel != null && sel.getPlaylistId() != 1L && sel.getPlaylistId() != 2L) {
+        if (sel != null && !sel.getPlaylistId().equals(1L) && !sel.getPlaylistId().equals(2L)) {
             pri.deletePlaylist(sel);
             allPlaylistList.remove(sel);
         }
@@ -465,9 +455,8 @@ public class ItunesPlayList {
         Song sel = songTable.getSelectionModel().getSelectedItem();
         Playlist list = sourceList.getSelectionModel().getSelectedItem();
         // Skydd: Man får inte ta bort låtar direkt från biblioteket i denna vy
-        if (sel != null && list != null && list.getPlaylistId() != 1L) {
+        if (sel != null && list != null && !list.getPlaylistId().equals(1L)) {
             pri.removeSong(list, sel);
-            //pri.save(list);
             list.getSongs().remove(sel);
             songTable.getItems().remove(sel);
         }
@@ -482,7 +471,7 @@ public class ItunesPlayList {
 
         ContextMenu menu = new ContextMenu();
         for (Playlist pl : allPlaylistList) {
-            if (pl.getPlaylistId() == 1L) continue; // Man kan inte lägga till i "Bibliotek" (det är källan)
+            if (pl.getPlaylistId().equals(1L)) continue; // Man kan inte lägga till i "Bibliotek" (det är källan)
 
             MenuItem itm = new MenuItem(pl.getName());
             itm.setOnAction(e -> {
@@ -490,8 +479,6 @@ public class ItunesPlayList {
                 if (!pri.isSongInPlaylist(pl, sel)) {
                     pri.addSong(pl, sel);
                     pl.getSongs().add(sel);
-                    //pl.addSong(sel);
-                    //pri.save(pl);
                 }
             });
             menu.getItems().add(itm);

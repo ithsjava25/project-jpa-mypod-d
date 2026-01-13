@@ -2,15 +2,18 @@ package org.example;
 
 import org.example.entity.Artist;
 import org.example.entity.Song;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Song Repository Tests")
 public class SongRepoTest extends RepoTest {
 
     @Test
+    @DisplayName("Should return correct count of songs in database")
     void count_shouldReturnNumberOfSongs() {
         // Given, When
         Long count = songRepo.count();
@@ -20,6 +23,7 @@ public class SongRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should confirm song exists when checking by unique ID")
     void existsByUniqueId_shouldFindSpecificSongIfPresent() {
         // Given, When
         boolean songExists = songRepo.existsByUniqueId(testSong1);
@@ -29,6 +33,7 @@ public class SongRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should save new song and make it findable")
     void saveSong_shouldSaveSong() {
         // Given
         Song testSong = new Song(12L, "Tester of Muppets", 666L, "http", testAlbum1);
@@ -42,6 +47,7 @@ public class SongRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should retrieve all songs from database")
     void findAll_shouldFindAllSongs() {
         // Given, When
         List<Song> testSongs = songRepo.findAll();
@@ -51,6 +57,7 @@ public class SongRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should find all songs by specific artist")
     void findByArtist_shouldFindSongBySpecificArtist() {
         // Given, When
         List<Song> testSongs = songRepo.findByArtist(testArtist1);
@@ -60,6 +67,7 @@ public class SongRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should return empty list when artist has no songs")
     void findByArtist_shouldReturnEmptyListWhenArtistHasNoSongs() {
         // Given
         Artist artistWithNoSongs = new Artist(99L, "Jacub", "Denmark");

@@ -9,9 +9,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Playlist Repository Tests")
 class PlaylistRepoTest extends RepoTest {
 
     @Test
+    @DisplayName("Should confirm playlist exists when checking by unique ID")
     void existsByUniqueId_shouldFindSpecificPlaylistIfPresent() {
         // Given
         Playlist playlist = playlistRepo.createPlaylist("playlist");
@@ -24,6 +26,7 @@ class PlaylistRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should retrieve all playlists from database")
     void findAll_shouldFindAllPlaylists() {
         // Given
         Playlist playlist1 = playlistRepo.createPlaylist("Playlist");
@@ -37,6 +40,7 @@ class PlaylistRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should confirm song is in playlist")
     void isSongInPlaylist_shouldConfirmSongInPlaylist() {
         // Given
         Playlist playlist = playlistRepo.createPlaylist("Playlist");
@@ -50,6 +54,7 @@ class PlaylistRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should create playlist and persist it to database")
     void createPlaylist_shouldPersistAndBeFindable() {
         // Given, when
         Playlist playlist = playlistRepo.createPlaylist("playlist");
@@ -60,6 +65,7 @@ class PlaylistRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should rename playlist and save new name")
     void renamePlaylist_shouldSavePlaylistWithNewName() {
         // Given
         Playlist playlist = playlistRepo.createPlaylist("Playlist");
@@ -73,6 +79,7 @@ class PlaylistRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should delete playlist from database")
     void deletePlaylist_shouldDeletePlaylist() {
         // Given
         Playlist playlist = playlistRepo.createPlaylist("Playlist");
@@ -85,6 +92,7 @@ class PlaylistRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should add song to playlist and persist relationship")
     void addSongToPlaylist_shouldPersistRelation() {
         // Given
         Playlist playlist = playlistRepo.createPlaylist("Playlist");
@@ -101,6 +109,7 @@ class PlaylistRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should add multiple songs to playlist")
     void addSongsToPlaylist_shouldPersistRelation() {
         // Given
         Playlist playlist = playlistRepo.createPlaylist("Playlist");
@@ -120,6 +129,7 @@ class PlaylistRepoTest extends RepoTest {
     }
 
     @Test
+    @DisplayName("Should remove song from playlist")
     void removeSong_shouldRemoveSongFromPlaylist() {
         // Given
         Playlist playlist = playlistRepo.createPlaylist("Playlist");

@@ -16,7 +16,7 @@ public class PlaylistRepoTest extends RepoTest {
     @DisplayName("Should confirm playlist exists when checking by unique ID")
     void existsByUniqueId_shouldFindSpecificPlaylistIfPresent() {
         // Given
-        Playlist playlist = playlistRepo.createPlaylist("playlist");
+        Playlist playlist = playlistRepo.createPlaylist("Playlist");
 
         // When
         boolean playlistExists = playlistRepo.existsByUniqueId(playlist.getPlaylistId());
@@ -57,7 +57,7 @@ public class PlaylistRepoTest extends RepoTest {
     @DisplayName("Should create playlist and persist it to database")
     void createPlaylist_shouldPersistAndBeFindable() {
         // Given, when
-        Playlist playlist = playlistRepo.createPlaylist("playlist");
+        Playlist playlist = playlistRepo.createPlaylist("Playlist");
 
         // Then
         assertThat(playlist.getPlaylistId()).isNotNull();
@@ -121,8 +121,9 @@ public class PlaylistRepoTest extends RepoTest {
         // Then
         Playlist reloaded = playlistRepo.findById(playlist.getPlaylistId());
 
-        assertThat(reloaded.getSongs()).hasSize(3);
-        assertThat(reloaded.getSongs()).contains(testSong1, testSong2, testSong3);
+        assertThat(reloaded.getSongs())
+            .hasSize(3)
+            .contains(testSong1, testSong2, testSong3);
     }
 
     @Test

@@ -36,7 +36,7 @@ public class AlbumRepoTest extends RepoTest {
     @DisplayName("Should save new album and make it findable")
     void save_shouldSaveNewAlbum() {
         // Given
-        Album newAlbum = new Album(33L, "To Test A Butterfly", "Hiphop", 2026, 11L, null, testArtist1);
+        Album newAlbum = new Album(33L, "To Test A Butterfly", "Hiphop", 2015, 16L, null, testArtist1);
 
         // When
         albumRepo.save(newAlbum);
@@ -70,7 +70,7 @@ public class AlbumRepoTest extends RepoTest {
     @DisplayName("Should return empty list when artist has no albums")
     void findByArtist_shouldReturnEmptyListWhenNoAlbums() {
         // Given
-        Artist artistWithNoAlbums = new Artist(99L, "No Albums Artist", "Nowhere");
+        Artist artistWithNoAlbums = new Artist(99L, "Jacub", "Denmark");
         artistRepo.save(artistWithNoAlbums);
 
         // When

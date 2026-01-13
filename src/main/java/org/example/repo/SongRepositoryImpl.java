@@ -11,8 +11,11 @@ import java.util.List;
 
 public class SongRepositoryImpl implements SongRepository {
 
-    private final EntityManagerFactory emf = PersistenceManager.getEntityManagerFactory();
+    private final EntityManagerFactory emf;
 
+    public SongRepositoryImpl(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
 
     @Override
     public Long count() {
@@ -30,7 +33,6 @@ public class SongRepositoryImpl implements SongRepository {
                 .getSingleResult() > 0;
         }
     }
-
 
     @Override
     public void save(Song song) {
@@ -62,7 +64,6 @@ public class SongRepositoryImpl implements SongRepository {
                 .setParameter("artist", artist)
                 .getResultList());
     }
-
 
     @Override
     public List<Song> findByAlbum(Album album) {

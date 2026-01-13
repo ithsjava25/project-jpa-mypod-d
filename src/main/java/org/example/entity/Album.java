@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Album {
 
     @Id
-    @Column(name="album_id")
+    @Column(name = "album_id")
     private Long albumId;
 
     private String name;
@@ -31,7 +31,6 @@ public class Album {
     @Lob
     private byte[] cover;
 
-
     @ManyToOne
     @JoinColumn(name = "artist_id")
     private Artist artist;
@@ -39,7 +38,8 @@ public class Album {
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Song> song = new ArrayList<>();
 
-    protected Album (){}
+    protected Album() {
+    }
 
     public Album(Long albumId, String name, String genre, int year, Long trackCount, byte[] cover, Artist artist) {
         this.albumId = albumId;
@@ -52,7 +52,7 @@ public class Album {
     }
 
     public static Album fromDTO(ItunesDTO dto, Artist artist) {
-        if (dto.collectionId() == null || dto.collectionName() == null){
+        if (dto.collectionId() == null || dto.collectionName() == null) {
             throw new IllegalArgumentException("Required fields (albumId, albumName) cannot be null");
         }
 

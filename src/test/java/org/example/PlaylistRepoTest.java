@@ -5,13 +5,12 @@ import org.example.entity.Song;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Playlist Repository Tests")
-class PlaylistRepoTest extends RepoTest {
+public class PlaylistRepoTest extends RepoTest {
 
     @Test
     @DisplayName("Should confirm playlist exists when checking by unique ID")
@@ -89,7 +88,7 @@ class PlaylistRepoTest extends RepoTest {
         playlistRepo.deletePlaylist(playlist);
 
         // Then
-        assertThat(playlistRepo.findAll()).isEmpty();
+        assertThat(playlistRepo.existsByUniqueId(playlist.getPlaylistId())).isFalse();
     }
 
     @Test

@@ -422,6 +422,7 @@ public class MyPod extends Application {
         selectedIndex = 0;
 
         currentScreenName = "PlaylistSongs";
+        currentActivePlaylist = p;
 
         Label title = new Label(p.getName());
         title.getStyleClass().add("screen-title");
@@ -458,7 +459,7 @@ public class MyPod extends Application {
                     showScreen("Playlists");
                 } else if ("PlaylistSongs".equals(currentScreenName) && currentActivePlaylist != null) {
                     playlists.stream()
-                        .filter(p -> p.getPlaylistId().equals(currentActivePlaylist.getName()))
+                        .filter(p -> p.getPlaylistId().equals(currentActivePlaylist.getPlaylistId()))
                         .findFirst()
                         .ifPresent(this::openPlaylist);
                 }
@@ -528,10 +529,10 @@ public class MyPod extends Application {
         selectedIndex = 0;
         currentScreenName = "NowPlaying";
 
-        Song currentSong = songs.stream()
+        Song currentSong = (songs != null) ? songs.stream()
             .filter(s -> s.getTitle().equalsIgnoreCase(songTitle))
             .findFirst()
-            .orElse(null);
+            .orElse(null) : null;
 
         // Skapa elementen och tilldela klasser
         Label header = new Label("▶ NOW PLAYING");

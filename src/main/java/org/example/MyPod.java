@@ -254,7 +254,7 @@ public class MyPod extends Application {
                     showScreen(mainMenu.get(selectedIndex));
                 } else {
                     // Om vi är i en lista, hantera valet (spela låt etc)
-                    handleSelection(menuLabels.get(selectedIndex).getText());
+                    handleSelection(menuLabels.get(selectedIndex));
                 }
                 return;
             }
@@ -350,16 +350,28 @@ public class MyPod extends Application {
      * Hjälpmetod för att lägga till en rad i listan på skärmen.
      */
     private void addMenuItem(String text) {
-        Label label = new Label(text);
-        label.getStyleClass().add("menu-item");
-        label.setMaxWidth(Double.MAX_VALUE); // Gör att raden fyller hela bredden (snyggare markering)
+        ObjectLabel stringLabel = new ObjectLabel(new Label(text), null);
+        stringLabel.label().getStyleClass().add("menu-item");
+        stringLabel.label().setMaxWidth(Double.MAX_VALUE); // Gör att raden fyller hela bredden (snyggare markering)
 
         if ("Edit Playlists".equals(text)) {
-            label.setStyle("-fx-font-weight: bold; -fx-underline: true;");
+            stringLabel.label().setStyle("-fx-font-weight: bold; -fx-underline: true;");
         }
 
-        menuLabels.add(label);
-        screenContent.getChildren().add(label);
+        menuLabels.add(stringLabel);
+        screenContent.getChildren().add(stringLabel.label());
+    }
+
+    /**
+     * Hjälpmetod för att lägga till en rad i listan på skärmen som pekar på ett object
+     */
+    private void addMenuItem(DBObject object) {
+        ObjectLabel objectLabel = new ObjectLabel(new Label(object.getName()), object);
+        objectLabel.label().getStyleClass().add("menu-item");
+        objectLabel.label().setMaxWidth(Double.MAX_VALUE); // Gör att raden fyller hela bredden (snyggare markering)
+
+        menuLabels.add(objectLabel);
+        screenContent.getChildren().add(objectLabel.label());
     }
 
     /**
@@ -384,30 +396,27 @@ public class MyPod extends Application {
     /**
      * Vad som händer när man trycker Enter på en låt/artist.
      */
-    private void handleSelection(String selection) {
+    private void handleSelection(ObjectLabel selection) {
         // Här kan du lägga till logik för att spela låten eller öppna albumet
-        System.out.println("User selected: " + selection);
+        System.out.println("User selected: " + selection.getText());
 
         if ("Artists".equals(currentScreenName)) {
             showArtistSongs(selection);
         } else if ("Albums".equals(currentScreenName)) {
             showAlbumSongs(selection);
         } else if ("Playlists".equals(currentScreenName)) {
-            if ("Edit Playlists".equals(selection)) {
+            if ("Edit Playlists".equals(selection.getText())) {
                 openMusicPlayer();
                 return;
             }
 
-            Playlist selectedPlaylist = playlists.stream()
-                .filter(p -> p.getName()
-                    .equals(selection))
-                .findFirst().orElse(null);
+            Playlist selectedPlaylist = playlistRepo.findById(selection.object().getId());
 
             if (selectedPlaylist != null) {
                 openPlaylist(selectedPlaylist);
             }
         } else {
-            if (selection.startsWith("No ") && selection.endsWith(" found")) {
+            if (selection.getText().startsWith("No ") && selection.getText().endsWith(" found")) {
                 return;
             }
             showNowPlaying(selection);
@@ -431,7 +440,7 @@ public class MyPod extends Application {
         if (p.getSongs() != null && !p.getSongs().isEmpty()) {
             List<Song> playlistSongs = new ArrayList<>(p.getSongs());
             for (Song s : playlistSongs) {
-                addMenuItem(s.getName());
+                addMenuItem(s);
             }
         } else {
             addMenuItem("No songs found");
@@ -478,22 +487,21 @@ public class MyPod extends Application {
         itunesPlayList.showLibrary(this.playlists);
     }
 
-    private void showArtistSongs(String artistName) {
+    private void showArtistSongs(ObjectLabel selection) {
         screenContent.getChildren().clear();
         menuLabels.clear();
         selectedIndex = 0;
 
         currentScreenName = "ArtistSongs";
 
-        Label title = new Label(artistName);
-        title.getStyleClass().add("screen-title");
-        screenContent.getChildren().add(title);
+        selection.label().getStyleClass().add("screen-title");
+        screenContent.getChildren().add(selection.label());
 
         if (songs != null && !songs.isEmpty()) {
             List<Song> artistSongs = songs.stream()
                 .filter(s -> s.getAlbum() != null &&
                     s.getAlbum().getArtist() != null &&
-                    s.getAlbum().getArtist().getName().equalsIgnoreCase(artistName))
+                    s.getAlbum().getArtist().getId().equals(selection.object().getId()))
                 .toList();
 
             if (!artistSongs.isEmpty()) {
@@ -507,21 +515,20 @@ public class MyPod extends Application {
         updateMenu();
     }
 
-    private void showAlbumSongs(String albumName) {
+    private void showAlbumSongs(ObjectLabel selection) {
         screenContent.getChildren().clear();
         menuLabels.clear();
         selectedIndex = 0;
 
         currentScreenName = "AlbumSongs";
 
-        Label title = new Label(albumName);
-        title.getStyleClass().add("screen-title");
-        screenContent.getChildren().add(title);
+        selection.label().getStyleClass().add("screen-title");
+        screenContent.getChildren().add(selection.label());
 
         if (songs != null && !songs.isEmpty()) {
             List<Song> albumSongs = songs.stream()
                 .filter(al -> al.getAlbum() != null &&
-                    al.getAlbum().getName().equalsIgnoreCase(albumName)).toList();
+                    al.getAlbum().getId().equals(selection.object().getId())).toList();
 
             if (!albumSongs.isEmpty()) {
                 albumSongs.forEach(s -> addMenuItem(s.getName()));
@@ -534,14 +541,14 @@ public class MyPod extends Application {
         updateMenu();
     }
 
-    private void showNowPlaying(String songTitle) {
+    private void showNowPlaying(ObjectLabel selection) {
         screenContent.getChildren().clear();
         menuLabels.clear();
         selectedIndex = 0;
         currentScreenName = "NowPlaying";
 
         Song currentSong = (songs != null) ? songs.stream()
-            .filter(s -> s.getName().equalsIgnoreCase(songTitle))
+            .filter(s -> s.getId().equals(selection.object().getId()))
             .findFirst()
             .orElse(null) : null;
 
@@ -549,7 +556,7 @@ public class MyPod extends Application {
         Label header = new Label("▶ NOW PLAYING");
         header.getStyleClass().add("now-playing-header");
 
-        Label titleLabel = new Label(songTitle);
+        Label titleLabel = new Label(selection.getText());
         titleLabel.getStyleClass().add("now-playing-title");
         titleLabel.setWrapText(true);
 

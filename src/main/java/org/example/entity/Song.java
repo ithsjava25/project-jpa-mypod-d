@@ -13,7 +13,7 @@ public class Song implements DBObject {
 
     @Id
     @Column(name = "song_id")
-    private Long Id;
+    private Long id;
 
     @Column(name = "title")
     private String name;
@@ -32,8 +32,8 @@ public class Song implements DBObject {
     protected Song() {
     }
 
-    public Song(Long songId, String title, Long length, Album album) {
-        this.Id = songId;
+    public Song(Long songId, String title, Long length, String previewUrl,Album album) {
+        this.id = songId;
         this.name = title;
         this.length = length;
         this.previewUrl = previewUrl;
@@ -66,11 +66,11 @@ public class Song implements DBObject {
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        this.Id = id;
+        this.id = id;
     }
 
     public String getName() {
@@ -124,7 +124,7 @@ public class Song implements DBObject {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
-            "songId = " + Id + ", " +
+            "songId = " + id + ", " +
             "title = " + name + ", " +
             "length = " + length + ")";
     }

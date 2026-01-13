@@ -13,7 +13,7 @@ public class Artist implements DBObject {
 
     @Id
     @Column(name = "artist_id")
-    private Long Id;
+    private Long id;
 
     private String name;
 
@@ -26,7 +26,7 @@ public class Artist implements DBObject {
     }
 
     public Artist(Long artistId, String name, String country) {
-        this.Id = artistId;
+        this.id = artistId;
         this.name = name;
         this.country = country;
     }
@@ -39,11 +39,11 @@ public class Artist implements DBObject {
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long artistId) {
-        this.Id = artistId;
+        this.id = artistId;
     }
 
     public String getName() {

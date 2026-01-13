@@ -12,7 +12,7 @@ public class Playlist implements DBObject{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     private String name;
 
@@ -34,7 +34,7 @@ public class Playlist implements DBObject{
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public String getName() {
@@ -44,7 +44,7 @@ public class Playlist implements DBObject{
     public Set<Song> getSongs() {return songs;}
 
     public void setId(Long playlistId) {
-        this.Id = playlistId;
+        this.id = playlistId;
     }
 
     public void setName(String name) {

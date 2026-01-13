@@ -18,7 +18,7 @@ public class Album implements DBObject {
 
     @Id
     @Column(name = "album_id")
-    private Long Id;
+    private Long id;
 
     private String name;
 
@@ -42,7 +42,7 @@ public class Album implements DBObject {
     }
 
     public Album(Long albumId, String name, String genre, int year, Long trackCount, byte[] cover, Artist artist) {
-        this.Id = albumId;
+        this.id = albumId;
         this.name = name;
         this.genre = genre;
         this.year = year;
@@ -65,11 +65,11 @@ public class Album implements DBObject {
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long albumId) {
-        this.Id = albumId;
+        this.id = albumId;
     }
 
     public String getName() {

@@ -68,7 +68,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
                             "LEFT JOIN FETCH p.songs s " +
                             "LEFT JOIN FETCH s.album a " +
                             "LEFT JOIN FETCH a.artist " +
-                            "WHERE p.Id = :id",
+                            "WHERE p.id = :id",
                         Playlist.class
                     )
                     .setParameter("id", id)

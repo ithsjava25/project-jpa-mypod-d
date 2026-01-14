@@ -229,13 +229,15 @@ public class MyPod extends Application {
      */
     private void setupNavigation(Scene scene) {
         scene.setOnKeyPressed(event -> {
-            if ("NowPlaying".equals(currentScreenName)) {
+            if ("NowPlaying".equals(currentScreenName) && mediaPlayer != null) {
                 if (event.getCode() == KeyCode.UP) {
                     adjustVolume(0.05);
+                    event.consume();
                     return;
                 }
                 if (event.getCode() == KeyCode.DOWN) {
                     adjustVolume(-0.05);
+                    event.consume();
                     return;
                 }
             }
@@ -255,6 +257,7 @@ public class MyPod extends Application {
                 else {
                     showMainMenu();
                 }
+                event.consume();
                 return;
             }
 
@@ -432,6 +435,7 @@ public class MyPod extends Application {
         menuLabels.clear();
         isMainMenu = true;
         selectedIndex = 0;
+        currentScreenName = "";
 
         Label title = new Label("myPod");
         title.getStyleClass().add("screen-title");
@@ -685,6 +689,7 @@ public class MyPod extends Application {
         volumeBar.setOpacity(0); // start hidden
 
         // Stack the volume bar on top of progress bar
+        ensureVolumeBarExists();
         StackPane progressStack = new StackPane(progressBar, volumeBar);
         progressStack.setAlignment(Pos.CENTER);
 
@@ -713,6 +718,7 @@ public class MyPod extends Application {
 
             Media media = new Media(url);
             mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setVolume(volumeBar.getProgress());
 
             mediaPlayer.setOnReady(() -> {
                 Duration total = mediaPlayer.getTotalDuration();
@@ -739,6 +745,14 @@ public class MyPod extends Application {
             mediaPlayer.play();
         } catch (Exception e) {
             System.err.println("Could not play preview: " + e.getMessage());
+        }
+    }
+
+    private void ensureVolumeBarExists() {
+        if (volumeBar == null) {
+            volumeBar = new ProgressBar(0.5); // standard volym 50%
+            volumeBar.getStyleClass().add("ipod-volume-bar");
+            volumeBar.setOpacity(0); // hidden by default
         }
     }
 

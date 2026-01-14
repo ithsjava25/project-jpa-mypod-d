@@ -56,7 +56,7 @@ public class LoggerManager {
             }
 
         } catch (SQLException e) {
-            logger.error("Database error: {}", e.getMessage());
+            logger.error("Database error: {}", e.getMessage(), e);
 
             throw new RuntimeException("Failed to initialize logging database", e);
         }

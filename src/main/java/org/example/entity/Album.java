@@ -127,13 +127,14 @@ public class Album implements DBObject {
     }
 
     public Image getCoverImage() {
-        if(getCover() == null){
-            return loadDefaultImage();
-        }
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(getCover());){
-            return new Image(bais);
+        byte[] bytes = getCover();
+        if (bytes == null || bytes.length == 0) return loadDefaultImage();
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
+            Image img = new Image(bais);
+            return img.isError() ? loadDefaultImage() : img;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return loadDefaultImage();
         }
     }
 
@@ -144,7 +145,7 @@ public class Album implements DBObject {
     /**
      * generate and returns byte array with cover art
      * @param url url pointing to desired cover
-     * @return a byte array of either the desired cover or default from resources, returns null if both the URL image and default image fail to load
+     * @return a byte array of the desired cover, or null if the URL image cannot be loaded
      */
     public static byte[] generateAlbumCover(URL url){
         BufferedImage bi = loadUrlImage(url);
@@ -198,10 +199,9 @@ public class Album implements DBObject {
     /**
      *
      * @return default cover art from resources
-     * @throws IOException
      */
     public static Image loadDefaultImage() {
-        try (InputStream is = Image.class.getResourceAsStream("/itunescover.jpg")) {
+        try (InputStream is = Album.class.getResourceAsStream("/itunescover.jpg")) {
             if (is == null) {
                 System.err.println("Could not load default image");
                 return null;

@@ -65,8 +65,11 @@ public class ItunesPlayList {
 
         Stage stage = new Stage();
 
-        // Lägg till existerande playlist i vår lokala lista
-        allPlaylistList.setAll(pri.findAll());
+        // Lägg till existerande playlist i vår lokala lista (non-blocking)
+        new Thread(() -> {
+            List<Playlist> pls = pri.findAll();
+            javafx.application.Platform.runLater(() -> allPlaylistList.setAll(pls));
+        }).start();
 
         // BorderPane är huvudlayouten: Top, Left, Center, Bottom
         BorderPane root = new BorderPane();

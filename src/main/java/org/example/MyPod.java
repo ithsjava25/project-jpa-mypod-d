@@ -139,6 +139,7 @@ public class MyPod extends Application {
         }
 
         myPodScreen.setFocusTraversable(true);
+        myPodScreen.setOnMouseClicked(e -> myPodScreen.requestFocus());
 
         // Koppla tangentbordslyssnare för att kunna styra menyn
         setupNavigation(scene);
@@ -396,7 +397,6 @@ public class MyPod extends Application {
             addMenuItem(item);
         }
         updateMenu();
-        myPodScreen.setOnMouseClicked(e -> myPodScreen.requestFocus());
 
     }
 

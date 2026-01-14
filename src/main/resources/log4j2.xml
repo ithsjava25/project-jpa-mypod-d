@@ -1,24 +1,23 @@
-<Configuration status="WARN">
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="com.example.logging">
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%t] %c{2} - %m%n"/>
-        </Console>
-        <JDBC name="Database" tableName="logs">
-            <DriverManager connectionString="jdbc:mysql://localhost:3306/myPodDB"
-                           driverClassName="com.mysql.cj.jdbc.Driver"
-                           username="user"
-                           password="pass"/>
-            <Column name="log_date_time" isEventTimestamp="true"/>
-            <Column name="clazz" pattern="%logger" isUnicode="false"/>
-            <Column name="level" pattern="%level" isUnicode="false"/>
-            <Column name="log" pattern="%message" isClob="false" isUnicode="false"/>
-            <Column name="exception" pattern="%ex{full}" isClob="false" isUnicode="false"/>
+        <JDBC name="HibernateDBAppender" tableName="app_logs">
+            <ConnectionSource class="com.example.logging.HibernateConnectionSource"/>
+            <Column name="level" pattern="%level"/>
+            <Column name="message" pattern="%message"/>
+            <Column name="error_details" pattern="%throwable"/>
+            <Column name="timestamp" isEventTimestamp="true"/>
         </JDBC>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{HH:mm:ss}] %-5level %logger{36} - %msg%n"/>
+        </Console>
     </Appenders>
+
     <Loggers>
-        <Root level="debug">
+        <Root level="error">
+            <AppenderRef ref="HibernateDBAppender"/>
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="Database"/>
         </Root>
     </Loggers>
 </Configuration>

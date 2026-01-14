@@ -23,14 +23,22 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import org.example.entity.*;
-import org.example.repo.*;
+import org.example.entity.Album;
+import org.example.entity.Artist;
+import org.example.entity.DBObject;
+import org.example.entity.Playlist;
+import org.example.entity.Song;
+import org.example.repo.SongRepository;
+import org.example.repo.AlbumRepository;
+import org.example.repo.ArtistRepository;
+import org.example.repo.PlaylistRepository;
+import org.example.repo.PlaylistRepositoryImpl;
+import org.example.repo.ArtistRepositoryImpl;
+import org.example.repo.AlbumRepositoryImpl;
+import org.example.repo.SongRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-
 /**
  * Huvudklassen för applikationen "MyPod".
  * Denna klass bygger upp GUI:t (simulerar en iPod) och hanterar navigering.
@@ -409,6 +417,10 @@ public class MyPod extends Application {
                 return;
             }
 
+            if (selection.object() == null) {
+                return;
+            }
+
             Playlist selectedPlaylist = playlists.stream()
                 .filter(p -> p.getId()
                     .equals(selection.object().getId()))
@@ -428,6 +440,11 @@ public class MyPod extends Application {
     /// NY KOD ///
     private void openPlaylist(Playlist p) {
         Playlist updatedPlaylist = playlistRepo.findById(p.getId());
+
+        if (updatedPlaylist == null) {
+            showScreen("Playlists");
+            return;
+        }
 
         screenContent.getChildren().clear();
         menuLabels.clear();

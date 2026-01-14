@@ -90,9 +90,7 @@
     -fx-min-height: 30px;
     -fx-max-height: 30px;
 
-
     -fx-padding: 0;
-
 
     -fx-alignment: center;
     -fx-text-alignment: center;
@@ -129,7 +127,7 @@
 
 .now-playing-container {
     -fx-alignment: center;
-    -fx-padding: 15 10 10 10;
+    -fx-padding: 0 10 10 0;
 }
 
 .now-playing-header {
@@ -158,6 +156,7 @@
 
 .ipod-progress-bar {
     -fx-pref-width: 200px;
+    -fx-pref-height: 5px;
 }
 
 .ipod-progress-bar .track {

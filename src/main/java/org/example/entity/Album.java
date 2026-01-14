@@ -5,6 +5,7 @@ import org.example.ItunesDTO;
 import org.hibernate.proxy.HibernateProxy;
 
 import javax.imageio.ImageIO;
+import javafx.scene.image.Image;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -126,8 +127,11 @@ public class Album implements DBObject {
     }
 
     public Image getCoverImage() {
+        if(getCover() == null){
+            return loadDefaultImage();
+        }
         try (ByteArrayInputStream bais = new ByteArrayInputStream(getCover());){
-            return ImageIO.read(bais);
+            return new Image(bais);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -148,7 +152,7 @@ public class Album implements DBObject {
         if (bi != null ) {
             return imageToBytes(bi);
         }
-        else return imageToBytes(loadDefaultImage());
+        return null;
     }
 
     /**
@@ -196,13 +200,13 @@ public class Album implements DBObject {
      * @return default cover art from resources
      * @throws IOException
      */
-    public static BufferedImage loadDefaultImage() {
+    public static Image loadDefaultImage() {
         try (InputStream is = Image.class.getResourceAsStream("/itunescover.jpg")) {
             if (is == null) {
                 System.err.println("Could not load default image");
                 return null;
             }
-            return ImageIO.read(is);
+            return new Image(is);
 
         } catch (IOException e) {
             return null;

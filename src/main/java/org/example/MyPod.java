@@ -9,6 +9,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -136,6 +138,8 @@ public class MyPod extends Application {
             System.out.println("CSS hittades inte, kör utan styling.");
         }
 
+        myPodScreen.setFocusTraversable(true);
+
         // Koppla tangentbordslyssnare för att kunna styra menyn
         setupNavigation(scene);
         showMainMenu(); // Initiera första vyn (tom tills datan laddats klart)
@@ -234,10 +238,8 @@ public class MyPod extends Application {
                 // ESCAPE fungerar som "Back"-knapp
                 else {
                     showMainMenu();
-
                 }
                 return;
-
             }
 
             int totalItems = menuLabels.size();
@@ -316,9 +318,7 @@ public class MyPod extends Application {
         menuLabels.clear();                  // Rensa listan med menyval
         isMainMenu = false;                  // Vi är inte i huvudmenyn längre
         selectedIndex = 0;                   // Återställ markör till toppen
-        /// NY KOD ///
         currentScreenName = screenName;
-        ///  NY KOD SLUT ///
         // Rubrik
         Label screenTitle = new Label(screenName);
         screenTitle.getStyleClass().add("screen-title");
@@ -341,13 +341,11 @@ public class MyPod extends Application {
                     albums.forEach(this::addMenuItem);
                 } else addMenuItem("No albums found");
             }
-            /// NY KOD ///
             case "Playlists" -> {
                 addMenuItem("Edit Playlists");
                 if (playlists != null && !playlists.isEmpty()) {
                     playlists.forEach(this::addMenuItem);
                 } else addMenuItem("No playlists found");
-                ///  SLUT NY KOD ///
             }
         }
         updateMenu(); // Uppdatera så första valet är markerat
@@ -398,6 +396,8 @@ public class MyPod extends Application {
             addMenuItem(item);
         }
         updateMenu();
+        myPodScreen.setOnMouseClicked(e -> myPodScreen.requestFocus());
+
     }
 
     /**
@@ -437,7 +437,6 @@ public class MyPod extends Application {
         }
     }
 
-    /// NY KOD ///
     private void openPlaylist(Playlist p) {
         Playlist updatedPlaylist = playlistRepo.findById(p.getId());
 
@@ -457,7 +456,6 @@ public class MyPod extends Application {
         title.getStyleClass().add("screen-title");
         screenContent.getChildren().add(title);
 
-
         if (updatedPlaylist.getSongs() != null && !updatedPlaylist.getSongs().isEmpty()) {
             List<Song> playlistSongs = new ArrayList<>(updatedPlaylist.getSongs());
             for (Song s : playlistSongs) {
@@ -469,7 +467,6 @@ public class MyPod extends Application {
         updateMenu();
 
     }
-    /// NY KOD SLUT ///
 
     /**
      * Öppnar det externa fönstret "ItunesPlayList".
@@ -504,8 +501,7 @@ public class MyPod extends Application {
                 .start();
         });
 
-
-        itunesPlayList.showLibrary(this.playlists);
+        itunesPlayList.showLibrary();
     }
 
     private void showArtistSongs(ObjectLabel selection) {
@@ -577,6 +573,7 @@ public class MyPod extends Application {
     }
 
     private void showNowPlaying(ObjectLabel selection) {
+
         screenContent.getChildren().clear();
         menuLabels.clear();
         selectedIndex = 0;
@@ -593,6 +590,25 @@ public class MyPod extends Application {
         // Skapa elementen och tilldela klasser
         Label header = new Label("▶ NOW PLAYING");
         header.getStyleClass().add("now-playing-header");
+
+        ImageView albumArtView = new ImageView();
+
+        if (currentSong != null && currentSong.getAlbum() != null) {
+            Image cover = currentSong.getAlbum().getCoverImage();
+            if (cover != null) {
+                albumArtView.setImage(cover);
+            }
+        }
+
+        albumArtView.setFitWidth(60);
+        albumArtView.setFitHeight(60);
+        albumArtView.setPreserveRatio(true);
+        albumArtView.setSmooth(true);
+        albumArtView.setStyle("""
+                -fx-border-color: #ccc;
+                -fx-border-width: 1;
+                -fx-background-color: white;
+            """);
 
         Label titleLabel = new Label(selection.getText());
         titleLabel.getStyleClass().add("now-playing-title");
@@ -620,9 +636,9 @@ public class MyPod extends Application {
         progressBar.getStyleClass().add("ipod-progress-bar");
 
         // Layout-behållaren
-        VBox layout = new VBox(8);
+        VBox layout = new VBox(3);
         layout.getStyleClass().add("now-playing-container");
-        layout.getChildren().addAll(header, titleLabel, artistLabel, albumLabel, progressBar);
+        layout.getChildren().addAll(header, albumArtView, titleLabel, artistLabel, albumLabel, progressBar);
 
         layout.setAlignment(Pos.CENTER);
         screenContent.getChildren().add(layout);
@@ -703,5 +719,4 @@ public class MyPod extends Application {
             return label.getText();
         }
     }
-
 }

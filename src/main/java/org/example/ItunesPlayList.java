@@ -25,8 +25,6 @@ public class ItunesPlayList {
 
     private final PlaylistRepository pri;
 
-
-    /// NY KOD ///
     private Runnable onUpdateCallback;
     public void setOnUpdate(Runnable callback) {
         this.onUpdateCallback = callback;
@@ -37,7 +35,6 @@ public class ItunesPlayList {
             onUpdateCallback.run();
         }
     }
-    /// NY KOD SLUT ///
 
     public ItunesPlayList(PlaylistRepository playlistRepository) {
         this.pri = playlistRepository;
@@ -63,13 +60,13 @@ public class ItunesPlayList {
     /**
      * Bygger upp hela gränssnittet och visar fönstret.
      *
-     * @param dbPlaylists En lista med playlist hämtade från databasen/backend.
      */
-    public void showLibrary(List<Playlist> dbPlaylists) {
+    public void showLibrary() {
+
         Stage stage = new Stage();
 
         // Lägg till existerande playlist i vår lokala lista
-        allPlaylistList.setAll(dbPlaylists);
+        allPlaylistList.setAll(pri.findAll());
 
         // BorderPane är huvudlayouten: Top, Left, Center, Bottom
         BorderPane root = new BorderPane();
@@ -109,7 +106,6 @@ public class ItunesPlayList {
         sourceList.getStyleClass().add("source-list");
         sourceList.setPrefWidth(200);
 
-        /// Ändrad Kod ///
         sourceList.setCellFactory(sl -> {
             ListCell<Playlist> cell = new ListCell<>() {
                 @Override
@@ -156,8 +152,6 @@ public class ItunesPlayList {
             });
             return cell;
         });
-
-        //////////////////////////////////////////////////
 
         // Lyssnare: Vad händer när man klickar på en spellista i menyn?
         sourceList.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
@@ -372,7 +366,6 @@ public class ItunesPlayList {
             return row;
         });
     }
-    /// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Filtrerar låtarna i den aktiva listan baserat på söktexten.
@@ -506,7 +499,6 @@ public class ItunesPlayList {
                         pri.addSong(pl, sel);
                         pl.getSongs().add(sel);
                         refresh();
-
                     } catch (IllegalStateException ex) {
                         new Alert(Alert.AlertType.ERROR, "Could not add song: " + ex.getMessage()).showAndWait();
                     }

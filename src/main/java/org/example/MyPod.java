@@ -577,7 +577,7 @@ public class MyPod extends Application {
                         }
                     });
                 } catch (Exception e) {
-                    logger.error("Failed to refresh playlists: {}", e.getMessage());
+                    logger.error("Failed to refresh playlists", e);
                 }
             })
                 .start();

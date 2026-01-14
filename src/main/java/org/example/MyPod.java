@@ -40,14 +40,19 @@ import org.example.repo.PlaylistRepositoryImpl;
 import org.example.repo.ArtistRepositoryImpl;
 import org.example.repo.AlbumRepositoryImpl;
 import org.example.repo.SongRepositoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Huvudklassen för applikationen "MyPod".
  * Denna klass bygger upp GUI:t (simulerar en iPod) och hanterar navigering.
  */
 public class MyPod extends Application {
+
+    private static final Logger logger = LoggerFactory.getLogger(MyPod.class);
 
     private String currentScreenName = "";
     private Playlist currentActivePlaylist = null;
@@ -139,7 +144,7 @@ public class MyPod extends Application {
             // Försök ladda CSS-filen för styling
             scene.getStylesheets().add(getClass().getResource("/ipod_style.css").toExternalForm());
         } catch (Exception e) {
-            System.out.println("CSS hittades inte, kör utan styling.");
+            logger.info("Start: CSS not found");
         }
 
         myPodScreen.setFocusTraversable(true);
@@ -571,7 +576,7 @@ public class MyPod extends Application {
                         }
                     });
                 } catch (Exception e) {
-                    System.err.println("Failed to refresh playlists: " + e.getMessage());
+                    logger.error("openMusicPlayer: Failed to refresh playlists", e);
                 }
             })
                 .start();
@@ -770,7 +775,7 @@ public class MyPod extends Application {
 
             mediaPlayer.play();
         } catch (Exception e) {
-            System.err.println("Could not play preview: " + e.getMessage());
+            logger.error("playPreview: Could not play preview:", e);
         }
     }
 
@@ -799,7 +804,7 @@ public class MyPod extends Application {
             this.albums = albumRepo.findAll();
             this.playlists = playlistRepo.findAll();
         } catch (Exception e) {
-            System.err.println("Kunde inte ladda data: " + e.getMessage());
+            logger.error("initializeData: Failed to load data", e);
         }
     }
 

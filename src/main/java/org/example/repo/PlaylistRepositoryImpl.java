@@ -24,7 +24,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
             return false;
         }
         try (var em = emf.createEntityManager()) {
-            return em.createQuery("select count(pl) from Playlist pl where pl.playlistId = :playlistId", Long.class)
+            return em.createQuery("select count(pl) from Playlist pl where pl.id = :playlistId", Long.class)
                 .setParameter("playlistId", id)
                 .getSingleResult() > 0;
         }
@@ -107,9 +107,9 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
             throw new IllegalArgumentException("Playlist and new name cannot be null or empty");
         }
         emf.runInTransaction(em -> {
-            Playlist managed = em.find(Playlist.class, playlist.getPlaylistId());
+            Playlist managed = em.find(Playlist.class, playlist.getId());
             if (managed == null) {
-                throw new IllegalStateException("Playlist not found with id: " + playlist.getPlaylistId());
+                throw new IllegalStateException("Playlist not found with id: " + playlist.getId());
             }
             managed.setName(newName);
         });
@@ -153,15 +153,15 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
         }
         emf.runInTransaction(em -> {
             Playlist managedPlaylist =
-                em.find(Playlist.class, playlist.getPlaylistId());
+                em.find(Playlist.class, playlist.getId());
             if (managedPlaylist == null) {
-                throw new IllegalStateException("Playlist not found with id: " + playlist.getPlaylistId());
+                throw new IllegalStateException("Playlist not found with id: " + playlist.getId());
             }
             for (Song s : songs) {
                 Song managedSong =
-                    em.find(Song.class, s.getSongId());
+                    em.find(Song.class, s.getId());
                 if (managedSong == null) {
-                    throw new IllegalStateException("Song not found with id: " + s.getSongId());
+                    throw new IllegalStateException("Song not found with id: " + s.getId());
                 }
                 managedPlaylist.addSong(managedSong);
             }

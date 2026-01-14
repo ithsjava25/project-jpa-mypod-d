@@ -339,7 +339,7 @@ public class ItunesPlayList {
                                     pl.getSongs().add(selectedSong);
                                 }
                             } catch (IllegalStateException ex) {
-                                new Alert(Alert.AlertType.ERROR, "Failed to add son: " + ex.getMessage()).showAndWait();
+                                new Alert(Alert.AlertType.ERROR, "Failed to add song: " + ex.getMessage()).showAndWait();
                             }
                         });
                         addSongSubMenu.getItems().add(playListItem);

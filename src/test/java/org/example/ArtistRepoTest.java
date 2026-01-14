@@ -35,14 +35,14 @@ public class ArtistRepoTest extends RepoTest {
     @DisplayName("Should save new artist and make it findable")
     void save_shouldSaveNewArtist() {
         // Given
-        Artist testArtist3 = new Artist(12L, "A Tribe Called Test", "USA");
+        Artist newArtist = new Artist(12L, "A Tribe Called Test", "USA");
 
         // When
-        artistRepo.save(testArtist3);
+        artistRepo.save(newArtist);
         List<Artist> artists = artistRepo.findAll();
 
         // Then
-        assertThat(artists).contains(testArtist3);
+        assertThat(artists).contains(newArtist);
     }
 
     @Test
@@ -59,10 +59,10 @@ public class ArtistRepoTest extends RepoTest {
     @DisplayName("Should return false when artist does not exist")
     void existsByUniqueId_shouldReturnFalseForNonExistentArtist() {
         // Given
-        Artist nonExistent = new Artist(999L, "Not In DB", "Nowhere");
+        Artist nonExistentArtist = new Artist(999L, "Jacub", "Denmark");
 
         // When
-        boolean exists = artistRepo.existsByUniqueId(nonExistent);
+        boolean exists = artistRepo.existsByUniqueId(nonExistentArtist);
 
         // Then
         assertThat(exists).isFalse();

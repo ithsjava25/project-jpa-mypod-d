@@ -22,7 +22,7 @@ import java.util.Objects;
  * <p>An {@code Album} is a persistent JPA entity that belongs to an
  * {@link Artist} and contains one or more {@link Song} entities.</p>
  *
- * <p></p>It also stores optional album artwork as a binary large object (BLOB),
+ * <p>It also stores optional album artwork as a binary large object (BLOB),
  * which is converted to a JavaFX {@link Image} when displayed in the UI.</p>
  *
  * <p>Album instances are typically created from iTunes API data via

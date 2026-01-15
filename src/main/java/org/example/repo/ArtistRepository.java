@@ -1,6 +1,5 @@
 package org.example.repo;
 
-import org.example.entity.Album;
 import org.example.entity.Artist;
 
 import java.util.List;

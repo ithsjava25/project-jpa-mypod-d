@@ -767,9 +767,8 @@ public class MyPod extends Application {
      */
     private void initializeData() {
         try {
-            EntityManagerFactory emf = PersistenceManager.getEntityManagerFactory();
             DatabaseInitializer initializer = new DatabaseInitializer(apiClient, songRepo, albumRepo, artistRepo, playlistRepo);
-            initializer.init(); // Fyll databasen om den är tom
+            initializer.init();
 
             // Hämta data till minnet
             this.songs = songRepo.findAll();

@@ -57,7 +57,7 @@ public class Album implements DBObject {
 
     public static Album fromDTO(ItunesDTO dto, Artist artist) {
         if (dto.collectionId() == null || dto.collectionName() == null) {
-            throw new IllegalArgumentException("Required fields (albumId, albumName) can not be null");
+            throw new IllegalArgumentException("Required fields (albumId, albumName) cannot be null");
         }
 
         // Try to load album cover from URL. If unavailable, store null and let UI handle fallback image.

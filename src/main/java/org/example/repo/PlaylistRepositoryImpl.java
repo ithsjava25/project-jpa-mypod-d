@@ -126,7 +126,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
     public Set<Song> findSongsInPlaylist(Playlist playlist) {
         if (playlist == null) {
             logger.error("findSongsInPlaylist: playlist is null");
-            throw new IllegalArgumentException("playlist can not be null");
+            throw new IllegalArgumentException("playlist cannot be null");
         }
         return emf.callInTransaction(em -> {
             Playlist managed = em.merge(playlist);
@@ -146,7 +146,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
     public boolean isSongInPlaylist(Playlist playlist, Song song) {
         if (playlist == null || song == null) {
             logger.error("isSongInPlaylist: playlist or song is null");
-            throw new IllegalArgumentException("playlist and song can not be null");
+            throw new IllegalArgumentException("playlist and song cannot be null");
         }
         try (var em = emf.createEntityManager()) {
             Playlist managed = em.find(Playlist.class, playlist.getId());
@@ -168,7 +168,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
     public Playlist createPlaylist(String name) {
         if (name == null || name.trim().isEmpty()) {
             logger.error("createPlaylist: name is null or empty");
-            throw new IllegalArgumentException("name can not be null or empty");
+            throw new IllegalArgumentException("name cannot be null or empty");
         }
         Playlist playlist = new Playlist(name);
         emf.runInTransaction(em -> em.persist(playlist));
@@ -186,7 +186,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
     public void renamePlaylist(Playlist playlist, String newName) {
         if (playlist == null || newName == null || newName.trim().isEmpty()) {
             logger.error("renamePlaylist: playlist or name is null or empty");
-            throw new IllegalArgumentException("Playlist and new name can not be null or empty");
+            throw new IllegalArgumentException("Playlist and new name cannot be null or empty");
         }
         emf.runInTransaction(em -> {
             Playlist managed = em.find(Playlist.class, playlist.getId());
@@ -208,7 +208,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
     public void deletePlaylist(Playlist playlist) {
         if (playlist == null) {
             logger.error("deletePlaylist: playlist is null");
-            throw new IllegalArgumentException("Playlist can not be null");
+            throw new IllegalArgumentException("Playlist cannot be null");
         }
         emf.runInTransaction(em -> {
             Playlist managed = em.merge(playlist);
@@ -227,7 +227,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
     public void addSong(Playlist playlist, Song song) {
         if (playlist == null || song == null) {
             logger.error("addSong: playlist or song is null");
-            throw new IllegalArgumentException("Playlist and song can not be null");
+            throw new IllegalArgumentException("Playlist and song cannot be null");
         }
         emf.runInTransaction(em -> {
             Playlist managedPlaylist =
@@ -257,7 +257,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
     public void addSongs(Playlist playlist, Collection<Song> songs) {
         if (playlist == null || songs == null) {
             logger.error("addSongs: playlist or songs is null");
-            throw new IllegalArgumentException("Playlist and songs can not be null");
+            throw new IllegalArgumentException("Playlist and songs cannot be null");
         }
         emf.runInTransaction(em -> {
             Playlist managedPlaylist =
@@ -289,7 +289,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
     public void removeSong(Playlist playlist, Song song) {
         if (playlist == null || song == null) {
             logger.error("removeSong: playlist or song is null");
-            throw new IllegalArgumentException("Playlist and song can not be null");
+            throw new IllegalArgumentException("Playlist and song cannot be null");
         }
         emf.runInTransaction(em -> {
             Playlist managedPlaylist =

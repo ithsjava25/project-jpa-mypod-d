@@ -109,8 +109,15 @@ public class ItunesPlayList {
 
         // Load playlists asynchronously to avoid blocking the JavaFX thread
         new Thread(() -> {
-            List<Playlist> pls = pri.findAll();
-            javafx.application.Platform.runLater(() -> allPlaylistList.setAll(pls));
+            try {
+                List<Playlist> pls = pri.findAll();
+                javafx.application.Platform.runLater(() -> allPlaylistList.setAll(pls));
+            } catch (Exception e) {
+                logger.error("showLibrary: Failed to load playlists", e);
+                javafx.application.Platform.runLater(() ->
+                    new Alert(Alert.AlertType.ERROR, "Failed to load playlists").showAndWait()
+                );
+            }
         }).start();
 
         BorderPane root = new BorderPane();
@@ -425,17 +432,16 @@ public class ItunesPlayList {
     }
 
     /**
-     * Filters the songs of the currently selected playlist based on the
-     * provided search text.
+     * Filters the songs of the currently selected playlist
+     * based on the provided search text.
      *
      * @param searchText the text used for filtering
      */
     private void filterSongs(String searchText) {
         Playlist selectedPlaylist = sourceList.getSelectionModel().getSelectedItem();
         if (selectedPlaylist == null) return;
-        Long currentList = selectedPlaylist.getId();
 
-        ObservableList<Song> masterData = FXCollections.observableArrayList(pri.findById(currentList).getSongs());
+        ObservableList<Song> masterData = FXCollections.observableArrayList(selectedPlaylist.getSongs());
 
         if (searchText == null || searchText.isEmpty()) {
             songTable.setItems(masterData);

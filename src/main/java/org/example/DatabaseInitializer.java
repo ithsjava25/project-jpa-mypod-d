@@ -31,7 +31,7 @@ public class DatabaseInitializer {
 
     public void init() {
         // Check if database is populated, populate if empty
-        if (songRepo.count() == 0) { // Limited amount of artist because the scope of the project
+        if (songRepo.count() == 0) { // Limited amount of artists because of the scope of the project
             List<String> searches = List.of("the+war+on+drugs",
                 "refused",
                 "thrice",
@@ -69,12 +69,11 @@ public class DatabaseInitializer {
             }
         }
 
-        if (!playlistRepo.existsByUniqueId(1L)) { // Finns det en playlist borde det vara Library/bibliotek
+        if (!playlistRepo.existsByUniqueId(1L)) {
             Playlist library = playlistRepo.createPlaylist("Library");
             playlistRepo.addSongs(library, songRepo.findAll());
-            //Lägger bara till låtar som fanns innan listan, om fler "laddas ner" behövs de manuellt läggas till
         }
-        if (!playlistRepo.existsByUniqueId(2L)) { // Finns det två playlists borde den andra vara Favorites/favoriter"
+        if (!playlistRepo.existsByUniqueId(2L)) {
             playlistRepo.createPlaylist("Favorites");
         }
     }

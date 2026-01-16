@@ -111,7 +111,12 @@ public class ItunesPlayList {
         new Thread(() -> {
             try {
                 List<Playlist> pls = pri.findAll();
-                javafx.application.Platform.runLater(() -> allPlaylistList.setAll(pls));
+                javafx.application.Platform.runLater(() -> {
+                    allPlaylistList.setAll(pls);
+                    if (!allPlaylistList.isEmpty()) {
+                        sourceList.getSelectionModel().selectFirst();
+                    }
+                });
             } catch (Exception e) {
                 logger.error("showLibrary: Failed to load playlists", e);
                 javafx.application.Platform.runLater(() ->
@@ -216,9 +221,6 @@ public class ItunesPlayList {
                     songTable.setItems(songList);
                 }
             });
-
-        // Choose first playlist "Library" as starting point
-        sourceList.getSelectionModel().selectFirst();
 
         // -----------------------------------------------------------------
         // Center section (song table)
